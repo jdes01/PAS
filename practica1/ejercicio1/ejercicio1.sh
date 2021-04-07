@@ -14,7 +14,8 @@ do
 	resto="$(echo "$x" | wc -m)%2"
 	if [[ $resto -ne 0 ]]; then
 		y="${x##*/}"
-		echo "$y"
+		let kbs=$(stat -c '%s' $y)/1024
+		echo "$y " " ruta:" $(realpath $y) " i-nodo:" $(stat -c '%i' $y) $(stat -c '%s' $y) "bytes" "kb: $kbs" "permisos:" $(stat -c '%a' $y) "($(stat -c '%U' $y) : $(stat -c '%G' $y))"   
 	fi
 
 done
