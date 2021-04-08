@@ -10,20 +10,20 @@
 
 re='[0-9]+$'
 
-if [ -d $1 ]; then
-	if [[ "$2" =~ $re ]]; then
+if [ -d $1 ]; then #comprueba que el primer argumento sea un dir
+	if [[ "$2" =~ $re ]]; then #comprueba que el segundo argumento sea un numero
 		
-		i=0
+		i=0 #contador
 
-		for x in $(find $1 -maxdepth 1 -type d)
+		for x in $(find $1 -maxdepth 1 -type d) #find el el dir solo profundidad uno y archivos de tipo dir
 		do
-			if [[ "$x" != "$1" ]]; then
+			if [[ "$x" != "$1" ]]; then #si el dir es distinto del repo (para que no salga)
 				let i=i+1
 			fi
 		done
 
-		let resto=$i%$2
-		let ncarpetas=$i/$2
+		let resto=$i%$2 #divisible el numero de dirs entre el numero
+		let ncarpetas=$i/$2 #numero de carpetas a crear
 
 		if [[ $resto == 0 ]]; then
 
