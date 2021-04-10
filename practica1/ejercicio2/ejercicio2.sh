@@ -49,7 +49,7 @@ do
 done
 
 a=0
-for b in $(ls ${1})
+for b in $(ls $1)
 do
 echo $b
 cp -r $b groups/group$[a/$size+1] #cp "dir/ + nombrecarpeta" "groups/group + numero"

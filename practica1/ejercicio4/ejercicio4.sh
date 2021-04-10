@@ -1,25 +1,59 @@
-#Crea un script que te permita abrir una terminal con un prompt personalizado modificando
-#la variable PS1. La personalizacion del prompt se hara de forma interactiva mediante un men ´ u´
-#de opciones. Se recomienda el uso de funciones para organizar el codigo. El men ´ u permitir ´ a ir ´
-#anadiendo las diferentes variables que existen para el ˜ prompt, tales como:
-#Nombre de usuario.
-#Nombre de host.
-#Ruta completa.
-#Ultima parte de la ruta. ´
-#Hora.
-#Fecha.
-#Ademas, tambi ´ en deber ´ a existir la opci ´ on de a ´ nadir una cadena literal. Cada vez que se a ˜ nada ˜
-#un elemento, se mostrara por pantalla el estado actual del ´ prompt que estamos creando. El menu´
-#debe tener una opcion para confirmar y abrir ´ bash con el prompt personalizado y otra para salir
-#sin hacer nada. Cuando cerremos la sesion personalizada de ´ bash, se terminara el ´ script tambien´
-#y el prompt permanecera como estaba antes de ejecutar el ´ script. Para abrir una instancia de bash
-#modificando temporalmente la variable PS1, puedes utilizar:
+#Crea unscriptque te permita abrir una terminal con unpromptpersonalizado modificandola variablePS1. La personalizacion delpromptse har ́a de forma interactiva mediante un men ́ude opciones. Se recomienda el uso de funciones para organizar el c ́odigo. El men ́u permitir ́a ira ̃nadiendo las diferentes variables que existen para elprompt, tales como:Nombre de usuario.Nombre de host.Ruta completa. ́Ultima parte de la ruta.Hora.Fecha.Adem ́as, tambi ́en deber ́a existir la opci ́on de a ̃nadir una cadena literal. Cada vez que se a ̃nadaun elemento, se mostrar ́a por pantalla el estado actual delpromptque estamos creando. El men ́udebe tener una opci ́on para confirmar y abrirbashcon elpromptpersonalizado y otra para salirsin hacer nada. Cuando cerremos la sesi ́on personalizada debash, se terminar ́a elscripttambi ́eny elpromptpermanecer ́a como estaba antes de ejecutar elscript. Para abrir una instancia de bashmodificando temporalmente la variablePS1, puedes utilizar:
 
-#	PROMPT_COMMAND="PS1='MiPromptPersonalizado';unset PROMPT_COMMAND" bash
+#!/bin/bash
+opcion=1
+while [ $opcion -ne 0 ] 			#hacemos un bucle para el menu
+do
+	echo "Seleccione un opcion" 
+	echo "1.Nombre usuario"
+	echo "2.Nombre del host"
+	echo "3.Ruta completa"
+	echo "4.Ultima parte de la ruta"
+	echo "5.Hora"
+	echo "6.Fecha"
+	echo "7.Cadena literal"
+	echo "8.Confimar"
+	echo "0.Salir"
 
-#Se trata de una variable de entorno que proporciona bash y que se ejecuta justo antes de mostrar
-#el prompt. Si intentamos modificar directamente la variable PS1 sin utilizar la variable PROMPT
-#COMMAND, es posible que el prompt no se modifique debido a que al iniciar una sesion de ´ bash, el
-#archivo .bashrc se carga y se anula la modificacion que hayamos hecho. ´
-#A continuacion se muestra un ejemplo de ejecuci ´ on: 
+	read opcion
 
+	case $opcion in				
+		1)	export var="\u";; #vamos guardando las opciones (concatenandolas)
+		2)	export var="\h";;
+		3)	export var="\w";;
+		4)	export var="\W";;
+		5)	export var="\t";;
+		6)	export var="\d";;
+		7)	read var;;
+		8)	PROMPT_COMMAND="PS1='$PS1'; unset PROMPT_COMMAND" bash;; # ejecutamos lo que llevamos
+
+		#esac (case al reves) como if y fi, es lo que se ejecuta al elegir una opcion del case
+	esac
+		PS1="$PS1$var"		#concadenamos las variables en PS1 para ir sumandolas
+		echo "PROMT ACTUAL: $PS1"
+done
+
+#COMANDOS DEL PS1
+
+#    \a un caracter ASCII de ring
+#     \d la fecha actual en formato "dia_sem mes día", "dom nov 18"
+#     \e un caracter ASCII de escape
+#     \h el nombre del equipo hasta el primer ., ejemplo linuxtotal de linuxtotal.com.mx
+#     \H el nombre del equipo
+#     \n nueva línea
+#     \r retorno de carro, enter
+#     \s el nombre del shell
+#     \t el tiempo actual en formato de 24 horas HH:MM:SS
+#     \T el tiempo actual en formato de 12 horas HH:MM:SS
+#     \@ el tiempo actual en formaro de 12 horas con am/pm
+#     \u el usuario actual
+#     \v la version de bash
+#     \V el número de release de batch, versión + parche
+#     \w el directorio de trabajo actual, path
+#     \W el nombre del directorio actual
+#     \! el número en el historial del comando
+#     \# el número de comando de este comando
+#     \$ si el usuario es root (UID=0) se indica un '#', un usuario normal '$'
+#     \\ diagonal
+#     \[ inicio de una secuencia de caracteres no imprimibles
+#     \] fin de la secuencia de caracteres no imprimibles

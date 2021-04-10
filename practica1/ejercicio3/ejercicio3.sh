@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Crear un script que permita automatizar un sistema de copias de seguridad. El sistema debera´
 #funcionar de la siguiente forma:
 #Recibira´ 3 par´ametros obligatorios: carpeta de origen, carpeta de destino y un numero ´
@@ -11,11 +13,35 @@
 #A continuacion se muestra un ejemplo en el que se ejecuta el ´ script varias veces, partiendo de
 #un directorio de backups vac´ıo.
 
-re='[0-9]+$'
-
 if [ -d $1 ]; then #arg 1 dir
-	if [ -d $2 ]; then #arg 2 dir
-		if [[ "$3" =~ $re ]]; then #arg 3 dir
-		fi
-	fi
+    if [ -d $2 ]; then #arg 2 dir
+        if [ $3 -gt 0 ]; then #arg 3 dir
+
+            N=$3
+
+            mkdir "$2/backup"
+
+            if [ -z "$(ls -A "$2/backup")" ]; then
+
+            	echo "hola"
+                mkdir -p "$2/backup/1"
+                cp -r $1 "$2/backup/1"
+                exit
+            fi
+
+            i=$(find "$2/backup" -maxdepth 1 -type d -print| wc -l)
+            echo "$i"
+
+            if [ $N -gt  $i ]; then
+
+            	let x=$N-$i
+            	let x=$N-$i+1
+
+                mkdir "$2/backup/$x"
+                cp -r $1 "$2/backups/$x"
+                exit
+            fi
+            
+        fi
+    fi
 fi
