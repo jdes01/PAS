@@ -8,31 +8,50 @@
 #Nota: para dividir una lista de ficheros en grupos de tamano˜ N puedes utilizar el comando
 #xargs -n $N. Si lo necesitas, busca algo mas de informaci ´ on acerca de este comando
 
-re='[0-9]+$'
 
-if [ -d $1 ]; then #comprueba que el primer argumento sea un dir
-	if [[ "$2" =~ $re ]]; then #comprueba que el segundo argumento sea un numero
-		
-		i=0 #contador
+if [ -d ${1} ] && [ ${2} -gt 0 ]
+then
+	echo "correcto"
 
-		for x in $(find $1 -maxdepth 1 -type d) #find el el dir solo profundidad uno y archivos de tipo dir
-		do
-			if [[ "$x" != "$1" ]]; then #si el dir es distinto del repo (para que no salga)
-				let i=i+1
-			fi
-		done
+	for a in $(ls ${1})
+	do
+		let "x = $x + 1"
 
-		let resto=$i%$2 #divisible el numero de dirs entre el numero
-		let ncarpetas=$i/$2 #numero de carpetas a crear
+	done
+	echo "Hay $x ficheros y directorios en ${1}"
 
-		if [[ $resto == 0 ]]; then
-
-			for (( it = 1; it <= $i; it++ )); do
-				mkdir "group"$it
-			done
-
-		fi
-
+	if [ ${2} -gt $x ]
+	then
+		echo "Error, el numero de archivos es menor que el numero de grupos"
+		exit
 	fi
+
+	if [ $[x%${2}] -ne 0 ]
+	then
+		echo "No se puede dividir en partes iguales"
+		exit
+	fi
+
+else
+	echo "fallaste"
+	exit
 fi
 
+let size=$[x/${2}]
+echo "el tamaño de grupo es $size"
+
+
+mkdir groups
+for var in $( seq ${2} ) #seq print a sequence of numbers
+do
+	mkdir "groups/group$var"
+
+done
+
+a=0
+for b in $(ls ${1})
+do
+echo $b
+cp -r $b groups/group$[a/$size+1] #cp "dir/ + nombrecarpeta" "groups/group + numero"
+let "a = $a + 1"
+done
