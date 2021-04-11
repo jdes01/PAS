@@ -15,7 +15,7 @@ do
 	echo "8.Confimar"
 	echo "0.Salir"
 
-	read opcion
+	read opcion # lee por terminal y lo guarda en la variable opcion
 
 	case $opcion in
 
