@@ -1,47 +1,56 @@
+# Este programa copia ficheros de la carpeta origen a la carpeta destino
+# Como mucho se harán n copias. Si se excede, se borra la mas antigua (la 1)
+# NOTA: La carpeta destino no existe. Debe de crearse externamente ya que el script no se encarga de crearla
+#Ejemplo de ejecución: ./ej3.sh carpeta_origen carpeta_destino 4
+
+
 #!/bin/bash
 
-#Crear un script que permita automatizar un sistema de copias de seguridad. El sistema debera´
-#funcionar de la siguiente forma:
-#Recibira´ 3 par´ametros obligatorios: carpeta de origen, carpeta de destino y un numero ´
-#entero N.
-#Se guardaran un ´ m ´aximo de N copias, de manera que cuando haya N y se quiera hacer
-#una nueva, se debera borrar la m ´ as antigua. ´
-#Las copias se almacenaran en subdirectorios dentro del directorio de destino siguiendo la ´
-#numeracion´ 1, 2, 3, ..., N. La copia m ´as antigua siempre estar´a en el subdirectorio 1.
-#Cuando una copia antigua se borre, se deberan renombrar el resto de directorios para seguir ´
-#manteniendo la copia mas antigua en el 1. ´
-#A continuacion se muestra un ejemplo en el que se ejecuta el ´ script varias veces, partiendo de
-#un directorio de backups vac´ıo.
+if [ $# -ne 3 ] || [ ! -d $1 ] || [ ! -d $2 ] # $# almacena el numero de argumentos pasados por línea de comandos (sin incluir el 0)
+then
 
-if [ -d $1 ]; then #arg 1 dir
-    if [ -d $2 ]; then #arg 2 dir
-        if [ $3 -gt 0 ]; then #arg 3 dir
+    echo "Formato incorrecto. Ejemplo: ./ejercicio.sh origen destino 10"
+    exit
+fi
 
-            N=$3
+numCarpetas=$(ls $2 | wc -l) #Cuenta todos los ficheros que hay en el directorio
 
-            mkdir "$2/backup"
+if [ $numCarpetas -lt $3 ] #Entramos siempre que haya menos carpetas creadas del limite
+then
 
-            if [ -z "$(ls -A "$2/backup")" ]; then
+    nuevaCarpeta=$(($numCarpetas+1)) #Por ejemplo, si tenemos 3 carpetas, crearemos la carpeta 4
 
-            	echo "hola"
-                mkdir -p "$2/backup/1" #no salta error si ya existe
-                cp -r $1 "$2/backup/1" #copia recursiva (el dir y todo lo que haya dentro)
-                exit
-            fi
+    mkdir $2/$nuevaCarpeta #Creamos la carpeta
 
-            i=$(find "$2/backup" -maxdepth 1 -type d -print| wc -l)
-            echo "$i"
+    for a in $(ls $1) #Iteramos todos los ficheros que queramos copiar
+    do
 
-            if [ $N -gt  $i ]; then
+        if [ -f $a ] #Comprobamos que sea un fichero
+        then
 
-            	let x=$N-$i  #PARA HACER OPERACIONES MATEMATICAS SIEMPRE USAMOS LET
-            	let x=$N-$i+1
-
-                mkdir "$2/backup/$x"
-                cp -r $1 "$2/backups/$x"
-                exit
-            fi
-            
+            cp $a $2/$nuevaCarpeta #Copiamos el fichero a la carpeta que creamos al principio del condicional
         fi
-    fi
+    done
+
+else
+    
+    rm -r $2/1 #Borramos la carpeta más antigua
+
+    mkdir $2/1 #La volvemos a crear pero está vacía
+
+    for y in $(seq 2 $3 )
+    do
+
+        mv $2/$y/* "$2/$(($y-1))" #Vamos copiando de la 2 a la 1, de la 3 a la 2, y así sucesivamente
+    done
+    
+    for a in $(ls $1) #Iteramos el contenido de la carpeta actual
+    do
+
+        if [ -f $a ] #Comprobamos que a sea un fichero
+        then
+            
+            cp $a $2/$3 #Copiamos a la ultima carpeta de todas el contenido de nuestro fichero
+        fi
+    done
 fi

@@ -9,12 +9,12 @@
 #xargs -n $N. Si lo necesitas, busca algo mas de informaci ´ on acerca de este comando
 
 
-if [ -d ${1} ] && [ ${2} -gt 0 ]
+if [ -d $1 ] && [ $2 -gt 0 ]
 then
 
 	echo "correcto"
 
-	for a in $(ls ${1})
+	for a in $(ls $1)
 	do
 
 		let "x = $x + 1"
@@ -22,14 +22,14 @@ then
 
 	echo "Hay $x ficheros y directorios en ${1}"
 
-	if [ ${2} -gt $x ] # -gt greater than
+	if [ $2 -gt $x ] # -gt greater than
 	then
 
 		echo "Error, el numero de archivos es menor que el numero de grupos"
 		exit
 	fi
 
-	if [ $[x%${2}] -ne 0 ] # -ne not equal
+	if [ $[x%$2] -ne 0 ] # -ne not equal
 	then
 
 		echo "No se puede dividir en partes iguales"
@@ -47,7 +47,7 @@ echo "el tamaño de grupo es $size"
 
 mkdir groups
 
-for var in $( seq ${2} ) #seq print a sequence of numbers "seq 5" -> 1 2 3 4 5
+for var in $( seq $2 ) #seq print a sequence of numbers "seq 5" -> 1 2 3 4 5
 do
 
 	mkdir "groups/group$var"
@@ -58,7 +58,17 @@ a=0
 for b in $(ls $1)
 do
 
-	echo $b
-	cp -r $b groups/group$[a/$size+1] #cp "dir/+nombrecarpeta" "groups/group + numero"
-	let "a = $a + 1"
+	if [ -f $b ]
+	then
+
+		echo $b
+		cp $b groups/group$x #Copiamos el fichero a su correspondiente carpeta
+
+		if [ $(find groups/group$x -maxdepth 1 -type f | wc -l) -eq $size ] #Si llenamos una carpeta, modificamos x para seguir añadiendo ficheros a otra carpeta
+		then
+
+			let "a = $a + 1"
+		fi
+	fi
+	
 done

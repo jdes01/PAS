@@ -20,7 +20,7 @@ fi
 while read direccion #lee por terminal y lo guarda en la variable direccion
 do
 	
-	ip=$(resolveip $direccion | cut -d " " -f6) # de host name a IP y viceversa 
-	echo -e "$ip\t\t\t$direccion" # echo -e reconoce los \n y permite dejar espacios
+	ip=$(dig $direccion +short) #Comando para resolver la ip
+	echo -e "$ip\t\t\t$direccion" #Imprimimos por pantalla la ip con su correspondiente dirección
 
-done < $1
+done < $1 #cuando hacemos while para leer ficheros usamos esto
