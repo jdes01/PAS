@@ -17,7 +17,8 @@ do
 
 	read opcion
 
-	case $opcion in				
+	case $opcion in
+
 		1)	export var="\u";; #vamos guardando las opciones (concatenandolas)
 		2)	export var="\h";;
 		3)	export var="\w";;
@@ -29,7 +30,7 @@ do
 
 		#esac (case al reves) como if y fi, es lo que se ejecuta al elegir una opcion del case
 	esac
-		PS1="$PS1$var"		#concadenamos las variables en PS1 para ir sumandolas
+		PS1="$PS1$var"		#como al elegir un numero hacemos export var, vamos concatenando lo que tiene var a cada vez en PS1
 		echo "PROMT ACTUAL: $PS1"
 done
 

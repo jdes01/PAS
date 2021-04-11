@@ -11,28 +11,33 @@
 
 if [ -d ${1} ] && [ ${2} -gt 0 ]
 then
+
 	echo "correcto"
 
 	for a in $(ls ${1})
 	do
-		let "x = $x + 1"
 
+		let "x = $x + 1"
 	done
+
 	echo "Hay $x ficheros y directorios en ${1}"
 
-	if [ ${2} -gt $x ]
+	if [ ${2} -gt $x ] # -gt greater than
 	then
+
 		echo "Error, el numero de archivos es menor que el numero de grupos"
 		exit
 	fi
 
-	if [ $[x%${2}] -ne 0 ]
+	if [ $[x%${2}] -ne 0 ] # -ne not equal
 	then
+
 		echo "No se puede dividir en partes iguales"
 		exit
 	fi
 
 else
+
 	echo "fallaste"
 	exit
 fi
@@ -40,18 +45,20 @@ fi
 let size=$[x/${2}]
 echo "el tamaño de grupo es $size"
 
-
 mkdir groups
-for var in $( seq ${2} ) #seq print a sequence of numbers
-do
-	mkdir "groups/group$var"
 
+for var in $( seq ${2} ) #seq print a sequence of numbers "seq 5" -> 1 2 3 4 5
+do
+
+	mkdir "groups/group$var"
 done
 
 a=0
+
 for b in $(ls $1)
 do
-echo $b
-cp -r $b groups/group$[a/$size+1] #cp "dir/ + nombrecarpeta" "groups/group + numero"
-let "a = $a + 1"
+
+	echo $b
+	cp -r $b groups/group$[a/$size+1] #cp "dir/+nombrecarpeta" "groups/group + numero"
+	let "a = $a + 1"
 done

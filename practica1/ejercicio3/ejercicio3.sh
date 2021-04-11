@@ -24,8 +24,8 @@ if [ -d $1 ]; then #arg 1 dir
             if [ -z "$(ls -A "$2/backup")" ]; then
 
             	echo "hola"
-                mkdir -p "$2/backup/1"
-                cp -r $1 "$2/backup/1"
+                mkdir -p "$2/backup/1" #no salta error si ya existe
+                cp -r $1 "$2/backup/1" #copia recursiva (el dir y todo lo que haya dentro)
                 exit
             fi
 
@@ -34,7 +34,7 @@ if [ -d $1 ]; then #arg 1 dir
 
             if [ $N -gt  $i ]; then
 
-            	let x=$N-$i
+            	let x=$N-$i  #PARA HACER OPERACIONES MATEMATICAS SIEMPRE USAMOS LET
             	let x=$N-$i+1
 
                 mkdir "$2/backup/$x"
