@@ -20,7 +20,7 @@ then
 		let "x = $x + 1"
 	done
 
-	echo "Hay $x ficheros y directorios en ${1}"
+	echo "Hay $x ficheros y directorios en $1"
 
 	if [ $2 -gt $x ] # -gt greater than
 	then
@@ -47,13 +47,13 @@ echo "el tamaño de grupo es $size"
 
 mkdir groups
 
-for var in $( seq $2 ) #seq print a sequence of numbers "seq 5" -> 1 2 3 4 5
+for var in $( seq $2 ) #seq print a sequence of numbers "seq 5" -> 1 2 3 4 5   # es lo mismo que: for(int i = 0; i<=$2; i++){}
 do
 
-	mkdir "groups/group$var"
+	mkdir "groups/group$var" #concatena groups/group3 por ejemplo
 done
 
-a=0
+x=1
 
 for b in $(ls $1)
 do
@@ -67,7 +67,7 @@ do
 		if [ $(find groups/group$x -maxdepth 1 -type f | wc -l) -eq $size ] #Si llenamos una carpeta, modificamos x para seguir añadiendo ficheros a otra carpeta
 		then
 
-			let "a = $a + 1"
+			let "x = $x + 1"
 		fi
 	fi
 	
