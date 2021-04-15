@@ -45,13 +45,13 @@ do
 
 	a=$(echo  "$x" | tr -d "\n") # tr ---> translate or delete characters; -d -> delete
 
-	b=$(echo  "$x" | grep --color -o -E '[a-z]+' | tr -d "\n" | wc -c )  # grep -o -> only matching characters; -E -> usa ERE
+	b=$(echo  "$x" | grep --color -o -E '[a-z]+' | tr -d "\n" | wc -m )  # grep -o -> only matching characters; -E -> usa ERE
 	
-	c=$(echo  "$x" | grep --color -o -E '[A-Z]+' | tr -d "\n" | wc -c )
+	c=$(echo  "$x" | grep --color -o -E '[A-Z]+' | tr -d "\n" | wc -m )
 
-	d=$(echo  "$x" | grep --color -o -E '[0-9]+' | tr -d "\n" | wc -c )
+	d=$(echo  "$x" | grep --color -o -E '[0-9]+' | tr -d "\n" | wc -m )
 
-	e=$(echo  "$x" | grep --color -o -E '[[:punct:]]+' | tr -d "\n" | wc -c  )
+	e=$(echo  "$x" | grep --color -o -E '[[:punct:]]+' | tr -d "\n" | wc -m  )
 
 	let "suma = $b + $c + $d + $e "
 
