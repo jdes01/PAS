@@ -29,6 +29,16 @@ pid_t flag;
 int status;
 
 
+
+
+
+
+
+
+
+
+
+
     switch ( fork() ){ //CLIENTE
 
     case -1: // Ocurrió un error al hacer fork()
@@ -101,6 +111,24 @@ int status;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     switch ( fork() ){ //SERVIDOR
 
     case -1: // Ocurrió un error al hacer fork()
@@ -169,7 +197,7 @@ int status;
     			must_stop = 1;
     		else
     			printf("Recibido el mensaje: %s\n", buffer);
-				
+
     	} while (!must_stop); 	// Iterar hasta que llegue el código de salida, es decir, la palabra exit
     
     	// Cerrar la cola del servidor
@@ -191,6 +219,19 @@ int status;
         break;
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
