@@ -39,10 +39,12 @@ int status;
 
 	case 0:  
 
-             // Cola del servidor
+            // Cola del servidor
         	mqd_t mq_server;
+
         	// Buffer para intercambiar mensajes
         	char buffer[MAX_SIZE];
+
             // Nombre para la cola
             char serverQueue[100];
         
@@ -54,6 +56,7 @@ int status;
             printf ("[Cliente]: El nombre de la cola es: %s\n", serverQueue);
         
             mq_server = mq_open(serverQueue, O_WRONLY);
+
             //mq_server = mq_open(SERVER_QUEUE, O_WRONLY);
         	if(mq_server == (mqd_t)-1 )
         	{
@@ -108,7 +111,80 @@ int status;
 
 	case 0:  
 
-        printf("hijo\n");
+    	// Cola del servidor
+    	mqd_t mq_server;
+
+    	// Atributos de la cola
+    	struct mq_attr attr;
+
+    	// Buffer para intercambiar mensajes
+    	char buffer[MAX_SIZE];
+
+    	// flag que indica cuando hay que parar. Se escribe palabra exit
+    	int must_stop = 0;
+
+    	// Inicializar los atributos de la cola
+
+    	attr.mq_maxmsg = 10;        // Maximo número de mensajes
+    	attr.mq_msgsize = MAX_SIZE; // Maximo tamaño de un mensaje
+
+        // Nombre para la cola
+        char serverQueue[100];
+    
+        // Nombre para la cola. Al concatenar el login sera unica en un sistema compartido.
+    	sprintf(serverQueue, "%s-%s", SERVER_QUEUE, getenv("USER"));
+        printf ("[Servidor]: El nombre de la cola es: %s\n", serverQueue);
+    
+    	// Crear la cola de mensajes del servidor. La cola CLIENT_QUEUE le servira en ejercicio resumen
+    	mq_server = mq_open(serverQueue, O_CREAT | O_RDONLY, 0644, &attr);
+        //mq_server = mq_open(SERVER_QUEUE, O_CREAT | O_RDONLY, 0644, &attr);
+    
+    	if(mq_server == (mqd_t)-1 )
+    	{
+       		perror("Error al abrir la cola del servidor");
+            exit(-1);
+    	}
+        printf ("[Servidor]: El descriptor de la cola es: %d\n", (int) mq_server);
+    
+    	do
+    	{
+    		// Número de bytes leidos
+    		ssize_t bytes_read;
+    
+    		// Recibir el mensaje
+    		bytes_read = mq_receive(mq_server, buffer, MAX_SIZE, NULL);
+
+    		// Comprar que la recepción es correcta (bytes leidos no son negativos)
+    		if(bytes_read < 0)
+    		{
+    			perror("Error al recibir el mensaje");
+    			exit(-1);
+    		}
+
+    		// Cerrar la cadena
+    		//buffer[bytes_read] = '\0';
+    
+    		// Comprobar el fin del bucle
+    		if (strncmp(buffer, MSG_STOP, strlen(MSG_STOP))==0)
+    			must_stop = 1;
+    		else
+    			printf("Recibido el mensaje: %s\n", buffer);
+				
+    	} while (!must_stop); 	// Iterar hasta que llegue el código de salida, es decir, la palabra exit
+    
+    	// Cerrar la cola del servidor
+    	if(mq_close(mq_server) == (mqd_t)-1)
+    	{
+    		perror("Error al cerrar la cola del servidor");
+    		exit(-1);
+    	}
+    
+    	// Eliminar la cola del servidor
+    	if(mq_unlink(serverQueue) == (mqd_t)-1)
+    	{
+    		perror("Error al eliminar la cola del servidor");
+    		exit(-1);
+    	}
 
 		exit(EXIT_SUCCESS);
 
