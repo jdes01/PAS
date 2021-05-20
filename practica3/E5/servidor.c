@@ -74,10 +74,12 @@
     		//buffer[bytes_read] = '\0';
     
     		// Comprobar el fin del bucle
-    		if (strncmp(buffer, MSG_STOP, strlen(MSG_STOP))==0)
+    		if (strncmp(buffer, MSG_STOP, strlen(MSG_STOP))==0){
     			must_stop = 1;
-    		else
+			}
+    		else{
     			printf("Recibido el mensaje: %s\n", buffer);
+			}
     	} while (!must_stop); 	// Iterar hasta que llegue el código de salida, es decir, la palabra exit
     
     	// Cerrar la cola del servidor
