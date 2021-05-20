@@ -1,6 +1,6 @@
 //
 // Crea dos procesos que se comunican mediante tuberias de manera bidireccional.
-//
+// 2 numeros aleatorios 
 
 #include <stdio.h>
 #include <stdlib.h> //exit, rand, srand
@@ -13,7 +13,8 @@
 int main() 
 {
 pid_t flag;
-int status, status_1, status_2, num, num2;
+int status, status_1, status_2;
+float num, num2;
 int fildes_1[2], fildes_2[2];
 const int BSIZE = 100;
 char buf[BSIZE], suma[10];
@@ -134,12 +135,12 @@ switch (fork())
 
 		srand(time(NULL));
 			// Número aleatorio entre 0 y 4999
-			num  = rand()%5000;
-			num2 = rand()%5000;
+			num  = (float)rand()/(float)(RAND_MAX/5000);
+			num2 = (float)rand()/(float)(RAND_MAX/5000);
 
-		printf("[PADRE]: Los numeros son %d y %d.\n", num, num2);
+		printf("[PADRE]: Los numeros son %f y %f.\n", num, num2);
 
-		sprintf(buf, "%d;%d", num, num2); //mete ambos numeros en el buffer buf
+		sprintf(buf, "%f;%f", num, num2); //mete ambos numeros en el buffer buf
 
 		// Escribimos datos en la tubería
 		if ( write(fildes_1[1], buf, 10) == -1)

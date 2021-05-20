@@ -349,7 +349,7 @@ int main()
 
 //
 // Crea dos procesos que se comunican mediante tuberias de manera bidireccional.
-//
+// Insertar dos numeros y comprobar si son primos, primos gemelos o no
 
 #include <stdio.h>
 #include <stdlib.h> //exit, rand, srand
