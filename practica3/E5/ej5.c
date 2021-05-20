@@ -89,14 +89,17 @@ int main()
     // Nombre para la cola. Al concatenar el login, sera unica en un sistema compartido.
     sprintf(queue_name, "%s-%s", QUEUE_NAME, getenv("USER"));
 
-	// Realizar el fork
-	rf = fork();
-	switch (rf)
+
+
+	switch (fork())
 	{
-		// Error
+
 		case -1:
+
 			printf ("No he podido crear el proceso hijo \n");
 			exit(1);
+
+
 
 		case 0: // Hijo. El hijo solo se encargará de escribir.
 
@@ -119,17 +122,16 @@ int main()
 				perror("[HIJO]: Error en la apertura de la cola");
 				exit(-1);
 			}
+
 			printf ("[HIJO]: Mi PID es %d y mi PPID es %d\n", getpid(), getppid());
 
-			/* Rellenamos el buffer que vamos a enviar
-			   Semilla de los números aleatorios, establecida a la hora actual*/
 			srand(time(NULL));
-			// Número aleatorio entre 0 y 4999
-			numeroAleatorio = rand()%5000;
-			sprintf(buffer,"%d",numeroAleatorio); // La funcion sprintf escribe en una cadena el valor indicado y añade el '/0'.
-			printf("[HIJO]: Generado el mensaje \"%s\"\n", buffer);
 
-			// Mandamos el mensaje
+			numeroAleatorio = rand()%5000;
+
+			sprintf(buffer,"%d", numeroAleatorio); 
+			
+			printf("[HIJO]: Generado el mensaje \"%s\"\n", buffer);
 			printf("[HIJO]: Enviando mensaje...\n");
 
 			resultado = mq_send(mq, buffer, MAX_SIZE, 0);
@@ -141,18 +143,25 @@ int main()
 			}
 
 			printf("[HIJO]: Mensaje enviado!\n");
-			// Cerrar la cola
+
 			if(mq_close(mq) == -1)
 			{
 				perror("[HIJO]: Error cerrando la cola");
 				exit(-1);
 			}
+
             printf("[HIJO]: Cola cerrada.\n");
-			break; //Saldría del switch()
+			break;
 
-		default: // Padre. El padre solo se encargará de leer
 
-			/* Apertura de la cola */
+
+
+
+
+
+		default:
+
+
 			mq = mq_open(queue_name, O_CREAT | O_RDONLY, 0644, &attr);
 
             printf ("[PADRE]: El nombre de la cola es: %s\n", queue_name);
@@ -176,43 +185,44 @@ int main()
 				exit(-1);
 			}
 
-			// Imprimimos el mensaje recibido
+
 			printf("[PADRE]: El mensaje recibido es \"%s\"\n", buffer);
 
-			// Cerrar la cola
+
 			if(mq_close(mq) == -1)
 			{
 				perror("[PADRE]: Error cerrando la cola");
 				exit(-1);
 			}
+
 			printf("[PADRE]: Cola cerrada.\n");
 
-			// Eliminar la cola
+
 			if(mq_unlink(queue_name) == -1)
 			{
 				perror("[PADRE]: Error eliminando la cola");
 				exit(-1);
 			}
 
-    	/*Espera del padre a los hijos*/
+
+
+
+
 	    while ( (flag=wait(&status)) > 0 )
 	    {
-		    if (WIFEXITED(status)) {
-			    printf("Proceso Padre, Hijo con PID %ld finalizado, status = %d\n", (long int)flag, WEXITSTATUS(status));
-		    }
-		    else if (WIFSIGNALED(status)) {  //Para seniales como las de finalizar o matar
-			    printf("Proceso Padre, Hijo con PID %ld finalizado al recibir la señal %d\n", (long int)flag, WTERMSIG(status));
-		    }
+		    if (WIFEXITED(status)) { printf("Proceso Padre, Hijo con PID %ld finalizado, status = %d\n", (long int)flag, WEXITSTATUS(status)); }
+		    
+			else if (WIFSIGNALED(status)) { printf("Proceso Padre, Hijo con PID %ld finalizado al recibir la señal %d\n", (long int)flag, WTERMSIG(status)); }
 	    }
-	    if (flag==(pid_t)-1 && errno==ECHILD)
-	    {
-		    printf("Proceso Padre %d, no hay mas hijos que esperar. Valor de errno = %d, definido como: %s\n", getpid(), errno, strerror(errno));
-	    }
-	    else
-	    {
+	    if (flag==(pid_t)-1 && errno==ECHILD) { printf("Proceso Padre %d, no hay mas hijos que esperar. Valor de errno = %d, definido como: %s\n", getpid(), errno, strerror(errno)); }
+	    
+		else{
+
 		    printf("Error en la invocacion de wait o waitpid. Valor de errno = %d, definido como: %s\n", errno, strerror(errno));
 		    exit(EXIT_FAILURE);
 	    }
 	}
+
+
 	exit(0);
 }
